@@ -12,11 +12,21 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
+if(req.session && req.session.user)
+{
+    next();
+}
+else
+{
+  res.status(401).json({message:"Unauthorized: Please log in first"})
+}
 });
  
-const PORT =5000;
+// const PORT =5001;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
 
-app.listen(PORT,()=>console.log("Server is running"));
+const PORT = process.env.PORT || 5001; // Theia IDE ka port use karein
+
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
